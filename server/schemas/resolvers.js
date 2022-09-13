@@ -7,6 +7,14 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
   // querys are equivalent to GET
     Query: {
+      me: async (parent, args) => {
+        const userData = await User.findOne({})
+        .select('-__v - password')
+        .populate('thoughts')
+        .populate('friends');
+
+        return userData;
+      },
       thoughts: async (parent, { username }) => {
         const params = username ? { username } : {};
         return Thought.find(params).sort({ createdAt: -1 });
